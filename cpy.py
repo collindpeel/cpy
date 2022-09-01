@@ -221,7 +221,7 @@ def findfile(file, path):
         print(name, err)        
 
 #a smart document opener
-def copen2(file, var = "r+", content = 0):
+def copen(file, var = "r+", content = 0):
     """Used to find and open a file, but also does xml, jpg """
     name = copen2.__name__
     import os
