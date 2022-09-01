@@ -200,4 +200,86 @@ class crandom:
             lista[tempindex2] = tempvalue
             
         return lista
+        
+def findfile(file, path):
+    """Used to find a file path"""
+    name = findfile.__name__
+    try:
+        import os
+        for root, dirs, files in os.walk(path):
+            if file in files: 
+                p = os.path.join(root, file)
+                #print(p)
+                return p 
+        print("Error, file not found. Trying real path")
+        from os import path
+        if path.exists(file):
+            return path.realpath(file)
+        else: 
+            print("No such file", file)
+    except Exception as err:
+        print(name, err)        
+
+#a smart document opener
+def copen2(file, var = "r+", content = 0):
+    """Used to find and open a file, but also does xml, jpg """
+    name = copen2.__name__
+    import os
+    try:
+        #finds file path
+        path = findfile(file, os.getcwd())
+        #print(path)
+        if not path:
+            path = findfile(file, "C:/")
+        
+        #checks filetype
+        filetype = file.split(".")[1]
+        if filetype == "txt" or filetype == "py":
+            pass
+        elif filetype == "jpg":
+            if var != "rb" and var != "wb":
+                if var == 'w':
+                    var = "wb"
+                else:
+                    var = "rb"
+        elif filetype == "xml":
+            import xml.dom.minidom
+            f = xml.dom.minidom.parse(file)
+            print("Node Name is:", f.nodeName)
+            print("First subnode is:", f.firstChild.tagName)
+            return f
+        elif filetype == "zip":
+            print("zip")
+            import zipfile
+            f=zipfile.ZipFile(path, 'r')
+            names = f.namelist()
+            counter = 0
+            for name in names:
+                counter += 1
+                print(str(counter), name)
+            contin = input("Do you want to open a file? 1 = yes")
+            if contin == "1":
+                filenumber = int(input("Which file number?"))
+                counter = 0
+                for name in names:
+                    counter += 1
+                    if counter == filenumber:
+                        zf =  f.open(name)
+                return zf 
+            
+        if content:
+            filecontent = []
+            f = open(path, var)
+            if filetype == "txt" or filetype == "py":
+                buffersize = 50000
+                buffer = f.read(buffersize)
+                while len(buffer): #NEWWWWWWWWWWWWWWWW
+                    filecontent.append(buffer)
+                    buffer = f.read(buffersize)
+                    return filecontent
+        return open(path, var) 
+    
+    except Exception as err:
+        print(name, err) #TIS reclassified as SC1 not SC2, posting SC1 next wed or thurs
+        
 
